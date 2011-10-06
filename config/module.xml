@@ -6,13 +6,13 @@
 		<icon>flash</icon>
 		<category>admin</category>
 	</module>
+	<project>
+		<entry name="langpackrepository">http://i18n.rbschange.fr</entry>
+	</project>
 	
-	
-	<!-- Add to project.xml
-	<modules>
-		<updater>
-			<entry name="langpackrepository">http://i18n.rbschange.fr</entry>
-		</updater>
-	</modules>	
+	<!-- Add this to project.xml in 'config/project/modules' section for override config value
+	<updater>
+		<entry name="langpackrepository">http://i18n.rbschange.fr</entry>
+	</updater>
 	 -->
 </config>
