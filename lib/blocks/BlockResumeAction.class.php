@@ -32,7 +32,7 @@ class updater_BlockResumeAction extends dashboard_BlockDashboardAction
 		foreach (PatchService::getInstance()->check() as $packageName => $value)
 		{
 			$module = str_replace('modules_', '', $packageName);
-			$patchArray[] = $module . ' ' . $value;
+			$patchArray[] = $module . ' ' . implode(', ', $value);
 		}
 		$request->setAttribute('patchArray', count($patchArray) ? $patchArray : null);
 
