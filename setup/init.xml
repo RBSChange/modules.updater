@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<script>
+	<binding fileName="modules/updater/persistentdocument/import/updater_binding.xml" />
+	<binding fileName="modules/task/persistentdocument/import/task_binding.xml" />
+
+	<systemfolder module="task" relatedmodule="updater">
+		<plannedtask bySystemtaskclassname="updater_BackgroundCheckUpdateTask" label="updater_BackgroundCheckUpdateTask"
+			hour="-1" minute="-1" maxduration="2" />
+	</systemfolder>
+</script>

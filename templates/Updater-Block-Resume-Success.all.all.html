@@ -1,0 +1,40 @@
+<div class="dashboard-widget" tal:omit-tag="refresh" refreshURL="${refreshURL}" title="${title}" icon="${icon}">
+	<tal:block tal:condition="forEdition">
+		<div class="title-bar" ><img src="${icon}" /> ${title}</div>
+		<div class="content-block"><div class="content">${transui:m.dashboard.dashboard.dummycontent,ucf}</div></div>
+	</tal:block>
+	<tal:block tal:condition="not:forEdition">
+		<tal:block tal:condition="not: hasUpdate">
+			${transui:m.updater.bo.general.block-resume-no-update,ucf}
+		</tal:block>
+
+		<tal:block tal:condition="langPackArray">
+			<span>${transui:m.updater.bo.general.block-resume-langpack,ucf,lab}</span>
+			<ul>
+				<li tal:repeat="langPack langPackArray">${langPack}</li>
+			</ul>
+		</tal:block>
+
+		<tal:block tal:condition="patchArray">
+			<span>${transui:m.updater.bo.general.block-resume-patch,ucf,lab}</span>
+			<ul>
+				<li tal:repeat="patch patchArray">${patch}</li>
+			</ul>
+		</tal:block>
+					
+		<tal:block tal:condition="hotfixArray">
+			<span>${transui:m.updater.bo.general.block-resume-hotfix,ucf,lab}</span>
+			<ul>
+				<li tal:repeat="hotfix hotfixArray">${hotfix}</li>
+			</ul>
+		</tal:block>
+		
+		<tal:block tal:condition="upgradeTo">
+			<span>${transui:m.updater.bo.general.block-resume-upgrade,ucf,lab}</span>
+			<ul>
+				<li>${upgradeTo}</li>
+			</ul>
+		</tal:block>
+
+	</tal:block>
+</div>

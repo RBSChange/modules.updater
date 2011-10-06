@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blocks>
+	<block type="modules_updater_Resume" section="top" icon="flash" dashboard="true" 
+		label="&amp;modules.updater.bo.general.Block-resume-title;">
+	</block>
+</blocks>

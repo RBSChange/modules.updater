@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rights>
+  <actions>
+    <document name="rootfolder"/>
+    <action name="UpdateLankPack" />
+    <action name="ApplyHotFix" />
+    <action name="ApplyPatch" />
+    <action name="DownloadUpgrade" />
+  </actions>
+  <roles>
+    <role name="Admin">
+      <permission name="*"/>
+      <permission name="UpdateLankPack"/>
+      <permission name="ApplyHotFix"/>
+      <permission name="ApplyPatch"/>
+      <permission name="DownloadUpgrade"/>
+    </role>
+    
+  	<role name="Guest">
+      <permission name="Enabled"/>
+      <permission name="List.*"/>
+    </role>
+  </roles>
+</rights>

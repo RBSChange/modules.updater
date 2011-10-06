@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bindings xmlns="http://www.mozilla.org/xbl" xmlns:xbl="http://www.mozilla.org/xbl"
+	xmlns:html="http://www.w3.org/1999/xhtml"
+	xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">	
+	
+	<binding id="cUpdaterView">
+		<content>
+			<xul:vbox flex="1">
+				<xul:toolbox>
+				  <xul:toolbar anonid="global-toolbar">
+				    <xul:toolbarbutton anonid="refresh" oncommand="clearLog();forceRefresh();" xbl:inherits="disabled"
+				    	label="${transui:m.updater.bo.general.refresh-button,attr,ucf}" image="{IconsBase}/small/refresh.png"/>
+				  </xul:toolbar>
+				</xul:toolbox>
+				<xul:hbox>
+					<xul:groupbox>
+					  <xul:caption label="${transui:m.updater.bo.general.lang-pack-caption,attr,ucf}"/>
+					  <xul:grid anonid="langpackgrid">
+					    <xul:columns>
+					      <xul:column flex="1"/>
+					      <xul:column flex="2"/>
+					    </xul:columns>
+					    <xul:rows anonid="langpackgridrows">
+					    	
+					    </xul:rows>
+					  </xul:grid>
+					  <xul:label anonid="nolangpack" value="${transui:m.updater.bo.general.no-lang-pack,attr,ucf}" />
+					</xul:groupbox>
+				
+					<xul:groupbox>
+					  <xul:caption label="${transui:m.updater.bo.general.patch-caption,attr,ucf}"/>
+					  <xul:grid anonid="patchgrid">
+					    <xul:columns>
+					      <xul:column flex="1"/>
+					      <xul:column flex="2"/>
+					    </xul:columns>
+					    <xul:rows anonid="patchgridrows">
+					    	
+					    </xul:rows>
+					  </xul:grid>
+					  <xul:label anonid="nopatch" value="${transui:m.updater.bo.general.no-patch,attr,ucf}" />
+					</xul:groupbox>
+					
+					<xul:groupbox>
+					  <xul:caption label="${transui:m.updater.bo.general.hotfix-caption,attr,ucf}"/>
+					  <xul:grid anonid="hotfixgrid">
+					    <xul:columns>
+					      <xul:column flex="1"/>
+					      <xul:column flex="2"/>
+					    </xul:columns>
+					    <xul:rows anonid="hotfixgridrows">
+					    	
+					    </xul:rows>
+					  </xul:grid>
+					  <xul:label anonid="nohotfix" value="${transui:m.updater.bo.general.no-hotfix,attr,ucf}" />
+					</xul:groupbox>
+					
+					<xul:groupbox>
+					  <xul:caption label="${transui:m.updater.bo.general.upgrade-caption,attr,ucf}"/>
+					  <xul:grid anonid="upgradegrid">
+					    <xul:columns>
+					      <xul:column flex="1"/>
+					      <xul:column flex="2"/>
+					    </xul:columns>
+					    <xul:rows anonid="upgradegridrows">
+					    	
+					    </xul:rows>
+					  </xul:grid>
+					  <xul:label anonid="noupgrade" value="${transui:m.updater.bo.general.no-upgrade,attr,ucf}" />
+					</xul:groupbox>
+					
+				</xul:hbox>
+				<xul:scrollbox anonid="scrollctrl" flex="1" style="overflow: auto;border-top: 1px solid #DDD;" 
+					orient="vertical">			
+					<xul:grid anonid="loggrid" flex="1">
+						    <xul:columns>
+						      <xul:column flex="1"/>
+						      <xul:column flex="10"/>
+						    </xul:columns>
+						    <xul:rows anonid="loggridrows">	
+						    </xul:rows>
+					</xul:grid>
+					<xbl:children />
+				</xul:scrollbox>
+			</xul:vbox>
+		</content>
+		
+		<implementation>
+			<field name="mModule">null</field>
+			<field name="data">null</field>
+			
+			<property name="disabled" >
+				<getter><![CDATA[
+					return this.getAttribute('disabled') == 'true';
+				]]></getter>
+				<setter><![CDATA[
+					if (val) {this.setAttribute('disabled', 'true');} else {this.removeAttribute('disabled');}
+				]]></setter>
+			</property>
+			
+			<constructor><![CDATA[
+				var pn = this.parentNode;
+				while(pn && pn.localName != "wmodule") {pn = pn.parentNode;}
+				this.mModule = pn;				
+				var usrinfo = getController().getUserInfos();
+				this.disabled = !((usrinfo && ('root' in usrinfo) && usrinfo.root))
+				this.reload();			
+			]]></constructor>
+					
+            <method name="getElementByAnonId">
+                <parameter name="id"/>
+                <body><![CDATA[
+                    return document.getAnonymousElementByAttribute(this, "anonid", id);
+                ]]></body>
+            </method>
+            
+            <method name="forceRefresh">
+                  <body><![CDATA[
+					var me = this;				
+					var callBack = function(result) {me.onLoadUpdate(result);};
+					wCore.executeJSON('updater', 'LoadUpdate', {forcerefresh:'true'}, callBack, true);
+                ]]></body>
+            </method>            
+            
+            <method name="reload">
+                 <body><![CDATA[
+					var me = this;				
+					var callBack = function(result) {me.onLoadUpdate(result);};
+					wCore.executeJSON('updater', 'LoadUpdate', {}, callBack, true);
+                ]]></body>
+            </method> 
+                      
+            <method name="onLoadUpdate">
+                <parameter name="result"/>
+                <body><![CDATA[
+                    wCore.debug(wCore.dump(result));
+                    this.data = result.contents;
+                    this.refreshLangPackUI();
+                    this.refreshPatchUI();
+                    this.refreshHotfixUI();
+                    this.refreshUpgradeUI();
+                ]]></body>
+            </method>		
+           
+            <method name="refreshLangPackUI">
+                <body><![CDATA[
+                   	var gridRows = this.getElementByAnonId('langpackgridrows');
+                   	if (gridRows.hasChildNodes())
+                   	{
+                   		while (gridRows.lastChild) {gridRows.removeChild(gridRows.lastChild);}
+                   	}
+					if (this.data.hasLangPack)
+					{
+						this.getElementByAnonId('nolangpack').collapsed = true;
+						
+						for (var packName in this.data.langPack)
+						{
+							var parts = packName.split('/');
+							if (parts.length == 1)
+							{
+								var baseKey = 'f';
+							}
+							else if (parts[0] == 'modules')
+							{
+								var baseKey = 'm.' + parts[1];
+							}
+							else if (parts[0] == 'themes')
+							{
+								var baseKey = 't.' + parts[1];
+							}
+							else
+							{
+								continue;
+							}
+							var rowNode = document.createElement('row');
+							var col = rowNode.appendChild(document.createElement('label'));
+							col.setAttribute('value', packName + ' (' + this.data.langPack[packName] + ')');
+							
+							col = rowNode.appendChild(document.createElement('button'));
+							col.setAttribute('label', "${transui:m.updater.bo.general.apply-button,ucf,js}");
+							col.setAttribute('data-baseKey', baseKey);
+							if (this.disabled) {col.setAttribute('disabled', 'true');}
+							col.setAttribute('oncommand', "this.disabled = true; document.getBindingParent(this).applyLangPack(this.getAttribute('data-baseKey'));");	
+							gridRows.appendChild(rowNode);
+						}
+					}
+					else
+					{
+						this.getElementByAnonId('nolangpack').collapsed = false;
+					} 
+                ]]></body>
+            </method>
+            
+ 
+            <method name="applyLangPack">
+            	 <parameter name="baseKey"/>
+                <body><![CDATA[
+                	var me = this;				
+					var callBack = function(result) {
+						me.clearLog();
+	                	if (result.status == 'OK')
+	                	{
+	                		me.log(baseKey + ' : ' + result.contents.nbkeys, 'info');
+	                	}
+	                	else
+	                	{
+	                		me.log(result.contents.errorMessage, 'error');
+	                	}
+						me.reload();
+					};
+					wCore.executeJSON('updater', 'UpdateLankPack', {baseKey: baseKey}, callBack, true);
+                ]]></body>
+            </method>	
+            
+            
+            <method name="refreshPatchUI">
+                <body><![CDATA[
+                   	var gridRows = this.getElementByAnonId('patchgridrows');
+                   	if (gridRows.hasChildNodes())
+                   	{
+                   		while (gridRows.lastChild) {gridRows.removeChild(gridRows.lastChild);}
+                   	}
+					if (this.data.hasPatch)
+					{
+						this.getElementByAnonId('nopatch').collapsed = true;	
+						for (var package in this.data.patch)
+						{
+							var patchNumbers = this.data.patch[package];
+							for (var i = 0; i < patchNumbers.length; i++)
+							{
+								var patch = package + ' ' + patchNumbers[i];
+								var rowNode = document.createElement('row');
+								var col = rowNode.appendChild(document.createElement('label'));
+								col.setAttribute('value', patch);
+								
+								col = rowNode.appendChild(document.createElement('button'));
+								col.setAttribute('label', "${transui:m.updater.bo.general.apply-button,ucf,js}");
+								col.setAttribute('data-patch', patch);
+								if (this.disabled) {col.setAttribute('disabled', 'true');}
+								col.setAttribute('oncommand', "this.disabled = true; document.getBindingParent(this).applyPatch(this.getAttribute('data-patch'));");	
+								gridRows.appendChild(rowNode);
+							}
+						}
+					}
+					else
+					{
+						this.getElementByAnonId('nopatch').collapsed = false;
+					} 
+                ]]></body>
+            </method>
+            
+            <method name="applyPatch">
+            	 <parameter name="patch"/>
+                <body><![CDATA[
+                	var me = this;				
+					var callBack = function(result) {me.onPatchExecuted(result);};
+					wCore.executeJSON('updater', 'ApplyPatch', {patch: patch}, callBack, true);
+                ]]></body>
+            </method>
+            
+            <method name="onPatchExecuted">
+            	<parameter name="result"/>
+                <body><![CDATA[
+                	this.clearLog();
+                	if (result.status == 'OK')
+                	{
+                		for (var i = 0; i < result.contents.logs.length; i++)
+                		{
+                			var log = result.contents.logs[i];
+                			wCore.debug('onPatchExecuted ' + i + ' ' +wCore.dump(log));
+                			this.log(log[1], log[0]);
+                		}
+                	}
+                	else
+                	{
+                		this.log(result.contents.errorMessage, 'error');
+                	}
+                	this.reload();
+                ]]></body>
+            </method>   
+            
+            <method name="refreshHotfixUI">
+                <body><![CDATA[
+                   	var gridRows = this.getElementByAnonId('hotfixgridrows');
+                   	if (gridRows.hasChildNodes())
+                   	{
+                   		while (gridRows.lastChild) {gridRows.removeChild(gridRows.lastChild);}
+                   	}
+					if (this.data.hasHotFix)
+					{
+						this.getElementByAnonId('nohotfix').collapsed = true;
+						
+						for (var i = 0; i < this.data.hotFix.length; i++)
+						{
+							var hotFix = this.data.hotFix[i];
+							var rowNode = document.createElement('row');
+							var col = rowNode.appendChild(document.createElement('label'));
+							col.setAttribute('value', hotFix);
+							
+							col = rowNode.appendChild(document.createElement('button'));
+							col.setAttribute('label', "${transui:m.updater.bo.general.apply-button,ucf,js}");
+							col.setAttribute('data-hotFix', hotFix);
+							if (this.disabled || this.data.hasPatch || i > 0) {col.setAttribute('disabled', 'true');}
+							
+							col.setAttribute('oncommand', "this.disabled = true; document.getBindingParent(this).applyHotfix(this.getAttribute('data-hotFix'));");	
+							gridRows.appendChild(rowNode);
+						}
+					}
+					else
+					{
+						this.getElementByAnonId('nohotfix').collapsed = false;
+					} 
+                ]]></body>
+            </method>     
+            
+            <method name="applyHotfix">
+            	 <parameter name="hotFix"/>
+                <body><![CDATA[
+                	var me = this;				
+					var callBack = function(result) {me.onHotFixExecuted(result);};
+					wCore.executeJSON('updater', 'ApplyHotFix', {hotFix: hotFix}, callBack, true);
+                ]]></body>
+            </method>    
+            
+            <method name="onHotFixExecuted">
+            	<parameter name="result"/>
+                <body><![CDATA[
+                	this.clearLog();
+                	if (result.status == 'OK')
+                	{
+                		for (var i = 0; i < result.contents.logs.length; i++)
+                		{
+                			var log = result.contents.logs[i];
+                			this.log(log[1], log[0]);
+                		}
+                	}
+                	else
+                	{
+                		this.log(result.contents.errorMessage, 'error');
+                	}
+                	this.reload();
+                ]]></body>
+            </method>       
+            
+           <method name="refreshUpgradeUI">
+                <body><![CDATA[
+                   	var gridRows = this.getElementByAnonId('upgradegridrows');
+                   	if (gridRows.hasChildNodes())
+                   	{
+                   		while (gridRows.lastChild) {gridRows.removeChild(gridRows.lastChild);}
+                   	}
+					if (this.data.hasUpgrade)
+					{
+						this.getElementByAnonId('noupgrade').collapsed = true;
+						
+						var upgrade = this.data.upgrade;
+						var rowNode = document.createElement('row');
+						var col = rowNode.appendChild(document.createElement('label'));
+						col.setAttribute('value', upgrade);
+						
+						col = rowNode.appendChild(document.createElement('button'));
+						col.setAttribute('label', "${transui:m.updater.bo.general.download-button,ucf,js}");
+						col.setAttribute('anonid', 'upgradebutton');
+						col.setAttribute('data-upgrade', upgrade);
+						if (this.disabled || this.data.hasPatch || this.data.hasHotFix) {col.setAttribute('disabled', 'true');}
+						
+						col.setAttribute('oncommand', "this.disabled = true; document.getBindingParent(this).downloadUpgrade(this.getAttribute('data-upgrade'));");	
+						gridRows.appendChild(rowNode);
+					}
+					else
+					{
+						this.getElementByAnonId('noupgrade').collapsed = false;
+					} 
+                ]]></body>
+            </method>     
+            
+            <method name="downloadUpgrade">
+            	 <parameter name="upgrade"/>
+                <body><![CDATA[
+                	var me = this;				
+					var callBack = function(result) {me.onDownloadedUpgrade(result)};
+					wCore.executeJSON('updater', 'DownloadUpgrade', {upgrateto: upgrade}, callBack, true);
+                ]]></body>
+            </method>  
+            
+            <method name="onDownloadedUpgrade">
+            	<parameter name="result"/>
+                <body><![CDATA[
+                	this.clearLog();
+                	if (result.status == 'OK')
+                	{
+                		for (var i = 0; i < result.contents.logs.length; i++)
+                		{
+                			var log = result.contents.logs[i];
+                			wCore.debug('onPatchExecuted ' + i + ' ' +wCore.dump(log));
+                			this.log(log[1], log[0]);
+                		}
+                			
+                		if (result.contents.checked)
+                		{
+                			var upgradebutton = this.getElementByAnonId('upgradebutton');
+                			upgradebutton.setAttribute('label', "${transui:m.updater.bo.general.apply-button,ucf,js}");
+                			upgradebutton.setAttribute('oncommand', "this.disabled = true; document.getBindingParent(this).applyUpgrade(this.getAttribute('data-upgrade'));");
+                			upgradebutton.disabled = false;
+                		}
+                	}
+                	else
+                	{
+                		this.log(result.contents.errorMessage, 'error');
+                	}
+                ]]></body>
+            </method>
+            
+            <method name="applyUpgrade">
+            	 <parameter name="upgrade"/>
+                <body><![CDATA[			
+					this.clearLog();
+					var requestUrl = Context.UIBASEURL + '/migration/migrateweb.php';
+					var req = new XMLHttpRequest();
+					req.open('POST', requestUrl, false);
+					req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+					req.setRequestHeader('Content-Length', 0);
+					req.send(null);
+					if (req.status != 0 && req.responseText != "")
+					{
+						var result = wCore.parseJSON(req.responseText);
+						this.log(result.steps.length + ' steps in upgrade', 'info');
+						for (var i = 0; i < result.steps.length; i++)
+						{
+							this.log("${transui:m.updater.bo.general.log-start-step,ucf,lab,js}" + (i + 1) + ' - '  + result.steps[i] + '...', 'info');
+							if (!this.executeUpgradeStep(i))
+							{
+								this.log("${transui:m.updater.bo.general.log-upgrade-failure,ucf,js}", 'info');
+								retrun;
+							}
+						}
+						this.log("${transui:m.updater.bo.general.log-upgrade-success,ucf,js}", 'info');
+						this.forceRefresh();
+					}
+                ]]></body>
+            </method> 
+            
+             <method name="executeUpgradeStep">
+             	<parameter name="stepIndex"/>
+             	<body><![CDATA[
+             		var requestUrl = Context.UIBASEURL + '/migration/migrateweb.php?execStep=' + stepIndex;
+					var req = new XMLHttpRequest();
+					req.open('POST', requestUrl, false);
+					req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+					req.setRequestHeader('Content-Length', 0);
+					req.send(null);
+             		if (req.status != 0 && req.responseText != "")
+             		{
+             			try
+             			{
+	             			var result = wCore.parseJSON(req.responseText);
+	             			for (var i = 0; i < result.logs.length; i++)
+	                		{
+	                			var log = result.logs[i];
+	                			this.log(log[1], log[0]);
+	                		}
+	                		return true;
+	                	}
+             			catch (e)
+             			{
+             				this.log(req.responseText, 'fatal');
+             			}
+             		}
+             		else
+             		{
+             			this.log("${transui:m.updater.bo.general.log-step-error,ucf,js}", 'fatal');
+             		}
+             		return false
+                ]]></body>
+            </method> 
+                                
+             <method name="clearLog">
+                <body><![CDATA[
+					var gridRows = this.getElementByAnonId('loggridrows');
+					if (gridRows.hasChildNodes())
+                   	{
+                   		while (gridRows.lastChild) {gridRows.removeChild(gridRows.lastChild);}
+                   	}
+                ]]></body>
+            </method>   
+            
+             <method name="log">
+             	<parameter name="string"/>
+             	<parameter name="level"/>
+                <body><![CDATA[
+					var gridRows = this.getElementByAnonId('loggridrows');
+					var rowNode = document.createElement('row');
+					var col = rowNode.appendChild(document.createElement('label'));
+					col.setAttribute('value', level);
+					
+					col = rowNode.appendChild(document.createElement('label'));
+					col.textContent = string;
+					gridRows.appendChild(rowNode);
+                ]]></body>
+            </method>                              		
+		</implementation>
+	</binding>
+</bindings>

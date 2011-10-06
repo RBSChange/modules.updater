@@ -1,0 +1,3 @@
+cupdaterview{
+	-moz-binding: url(binding:modules.updater.updaterview#cUpdaterView);
+}

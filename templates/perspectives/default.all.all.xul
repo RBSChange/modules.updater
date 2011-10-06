@@ -1,0 +1,5 @@
+<hbox flex="1">
+	<deck flex="1" anonid="mainViewDeck">
+		<cupdaterview flex="1" />	
+	</deck>
+</hbox>

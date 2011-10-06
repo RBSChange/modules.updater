@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<i18n baseKey="m.updater.bo.general" lcid="fr_FR">
+  <key id="module-name">Mise à jour</key>
+  <key id="system-folder-name">Mise à jour</key>
+  
+  
+  <key id="block-resume-title">Mise à jour</key>
+  <key id="block-resume-no-update">Votre projet est à jour</key>
+    
+  <key id="block-resume-hotfix">Hotfix applicable</key>
+  <key id="block-resume-patch">Patch applicable</key>
+  <key id="block-resume-langpack">Pack de lang applicable</key>
+  <key id="block-resume-keys">{nbKeys} Clés dans {pack}</key>
+  
+  <key id="block-resume-upgrade">Migration</key>
+ 
+  <key id="refresh-button">Rafraichir</key>
+  <key id="lang-pack-caption">Liste des pack de langues</key>
+  <key id="no-lang-pack">Il n'y a pas de pack de langues à appliquer</key>
+  <key id="patch-caption">Liste des patchs</key>
+  <key id="no-patch">Il n'y a pas de patch à appliquer</key>
+  <key id="hotfix-caption">Liste des hotfix</key>
+  <key id="no-hotfix">Il n'y a pas de hotfix à appliquer</key>
+  
+  <key id="upgrade-caption">Mise à jour</key>
+  <key id="no-upgrade">Aucune mise à jour disponible</key>
+  
+ 
+  <key id="apply-button">Appliquer</key>
+  <key id="download-button">Télécharger</key>
+  
+  <key id="log-start-step">Execution de l'étape</key>
+  <key id="log-upgrade-failure">Echec de l'application de la mise à jour</key>
+  <key id="log-upgrade-success">Mise à jour appliqué avec succes</key>
+  <key id="log-step-error">Impossible d'executer l'étape</key>
+</i18n>

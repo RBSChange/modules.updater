@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+
+	<action name="_checkConfig">
+		<body><![CDATA[
+			 wCore.debug('cModule_' + this.name + '._checkConfig');
+		]]></body>
+	</action>
+			
+	<action name="onModuleInit">
+		<body><![CDATA[
+			wCore.debug('cModule_' + this.name + '.onModuleInit');
+		]]></body>
+	</action>
+	
+	<action name="onSwitchFrom">
+		<parameter name="fromModule" />
+		<body><![CDATA[
+			wCore.debug('cModule_' + this.name + '.onSwitchFrom: ' + fromModule);
+		]]></body>
+	</action>
+	
+	
+	
+  <action name="updateLankPack">
+    <parameter name="listWidget"/>
+    <body><![CDATA[
+			var id = listWidget.getSelectedIds()[0];
+			var lang = this.getContextLang();
+			this.executeJSON("UpdateLankPack", {cmpref: id, lang: lang });
+		]]></body>
+  </action>
+ 
+  <action name="onUpdateLankPackSuccess">
+    <parameter name="result"/>
+    <body><![CDATA[
+			getController().alert("${transui:m.i18n.bo.actions.updatelankpack-result,lab,js} " + result.contents.nbkeys);
+		]]></body>
+  </action>
+  
+  
+</actions>

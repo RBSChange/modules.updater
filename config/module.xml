@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<module>
+		<enabled>true</enabled>
+		<visible>true</visible>
+		<icon>flash</icon>
+		<category>admin</category>
+	</module>
+	
+	
+	<!-- Add to project.xml
+	<modules>
+		<updater>
+			<entry name="langpackrepository">http://i18n.rbschange.fr</entry>
+		</updater>
+	</modules>	
+	 -->
+</config>
