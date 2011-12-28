@@ -12,7 +12,7 @@
 				    	label="${transui:m.updater.bo.general.refresh-button,attr,ucf}" image="{IconsBase}/small/refresh.png"/>
 				  </xul:toolbar>
 				</xul:toolbox>
-				<xul:hbox>
+				<xul:scrollbox flex="2" style="overflow: auto;" orient="horizontal">
 					<xul:groupbox>
 					  <xul:caption label="${transui:m.updater.bo.general.lang-pack-caption,attr,ucf}"/>
 					  <xul:grid anonid="langpackgrid">
@@ -69,7 +69,8 @@
 					  <xul:label anonid="noupgrade" value="${transui:m.updater.bo.general.no-upgrade,attr,ucf}" />
 					</xul:groupbox>
 					
-				</xul:hbox>
+				</xul:scrollbox>
+				
 				<xul:scrollbox anonid="scrollctrl" flex="1" style="overflow: auto;border-top: 1px solid #DDD;" 
 					orient="vertical">			
 					<xul:grid anonid="loggrid" flex="1">
