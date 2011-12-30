@@ -7,6 +7,44 @@ class updater_Setup extends object_InitDataSetup
 	public function install()
 	{
 		$this->executeModuleScript('init.xml');
+		
+		$tm = f_persistentdocument_TransactionManager::getInstance();
+		$pp = $tm->getPersistentProvider();
+		$pp->setDocumentCache(false);
+		
+		
+		$ids = users_BackenduserService::getInstance()->createQuery()
+			->add(Restrictions::like('dashboardcontent', 'modules_dashboard_browsersversion'))
+			->setProjection(Projections::property('id', 'id'))
+			->findColumn('id');
+		
+		$chunks = array_chunk($ids, 100);
+		foreach ($chunks as $chunk)
+		{
+			try
+			{
+				$tm->beginTransaction();
+				
+				foreach ($chunk as $id)
+				{
+					$user = users_persistentdocument_backenduser::getInstanceById($id);
+					$dash = $user->getDashboardcontent();
+					$newDash = str_replace('type="modules_dashboard_browsersversion"', 'type="modules_updater_Resume"', $dash);
+					if ($newDash !== $dash)
+					{
+						Framework::info('Update: ' . $id .  ' dashboardcontent');
+						$user->setDashboardcontent($newDash);
+						$pp->updateDocument($user);
+					}
+				}	
+						
+				$tm->commit();
+			} 
+			catch (Exception $e) 
+			{
+				$tm->rollback($e);
+			}
+		}
 	}
 
 	/**
