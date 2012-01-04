@@ -1,0 +1,40 @@
+cupdaterview .console-caption {
+	font-style: normal;
+	font-weight: bold;
+	padding-bottom: 10px;
+	padding-top: 5px;
+}
+
+cupdaterview hbox.warn description {
+	font-style: normal;
+	font-weight: bold;
+	padding-bottom: 10px;	
+	padding-top: 5px;	
+	background: url(/changeicons/normal/warning.png) center left no-repeat;
+	padding-left: 35px;
+}
+
+cupdaterview hbox.ready description {
+	font-style: normal;
+	font-weight: bold;
+	padding-bottom: 10px;	
+	padding-top: 5px;
+	background: url(/changeicons/normal/positive.png) center left no-repeat;
+	padding-left: 35px;
+}
+
+cupdaterview hbox[anonid="header"] {
+	-moz-appearance: none;
+	padding: 5px 5px 5px 5px;
+	margin: 5px;
+	border: 1px solid gainsboro;
+	-moz-border-radius: 5px;
+}
+
+cupdaterview hbox.warn {
+	background-color: #FCFFCD;	
+}
+
+cupdaterview hbox.ready {
+	background-color: #AEFFB3;
+}

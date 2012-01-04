@@ -12,28 +12,29 @@
 				    	label="${transui:m.updater.bo.general.refresh-button,attr,ucf}" image="{IconsBase}/small/refresh.png"/>
 				  </xul:toolbar>
 				</xul:toolbox>
-				<xul:hbox flex="1">		
+				<xul:vbox flex="1">		
 					<xul:scrollbox flex="1" style="overflow: auto;" orient="vertical">
-						<xul:description anonid="headermsg">${transui:m.updater.bo.general.header-ready}</xul:description>
-						
+						<xul:hbox anonid="header">	
+							<xul:description anonid="headermsg"></xul:description>	
+						</xul:hbox>					
 						<xul:groupbox anonid="langpackgroup" collapsed="true">
 						  <xul:caption label="${transui:m.updater.bo.general.lang-pack-caption,attr,ucf}"/>
 						  <xul:grid anonid="langpackgrid">
 						    <xul:columns>
 						      <xul:column flex="1"/>
-						      <xul:column flex="2"/>
+						      <xul:column />
 						    </xul:columns>
 						    <xul:rows anonid="langpackgridrows">				    	
 						    </xul:rows>
 						  </xul:grid>
 						</xul:groupbox>
 					
-						<xul:groupbox anonid="patchgroup" collapsed="true">
+						<xul:groupbox anonid="patchgroup" collapsed="true" >
 						  <xul:caption label="${transui:m.updater.bo.general.patch-caption,attr,ucf}"/>
 						  <xul:grid anonid="patchgrid">
 						    <xul:columns>
 						      <xul:column flex="1"/>
-						      <xul:column flex="2"/>
+						      <xul:column />
 						    </xul:columns>
 						    <xul:rows anonid="patchgridrows">						    	
 						    </xul:rows>
@@ -47,7 +48,7 @@
 						  <xul:grid anonid="hotfixgrid">
 						    <xul:columns>
 						      <xul:column flex="1"/>
-						      <xul:column flex="2"/>
+						      <xul:column />
 						    </xul:columns>
 						    <xul:rows anonid="hotfixgridrows">						    	
 						    </xul:rows>
@@ -59,7 +60,7 @@
 						  <xul:grid anonid="upgradegrid">
 						    <xul:columns>
 						      <xul:column flex="1"/>
-						      <xul:column flex="2"/>
+						      <xul:column />
 						    </xul:columns>
 						    <xul:rows anonid="upgradegridrows">
 						    	
@@ -71,7 +72,7 @@
 					<xul:splitter>
 					</xul:splitter>
 					
-					<xul:scrollbox anonid="scrollctrl" flex="1"	 style="overflow: auto;" orient="vertical">	
+					<xul:scrollbox collapsed="true" anonid="scrollctrl" flex="1"	 style="overflow: auto;" orient="vertical">	
 						<xul:label class="console-caption" value="${transui:m.updater.bo.general.log-caption,attr,ucf,lab}" />		
 						<xul:grid anonid="loggrid" flex="1">
 							    <xul:columns>
@@ -83,7 +84,7 @@
 						</xul:grid>
 						<xbl:children />
 					</xul:scrollbox>
-				</xul:hbox>
+				</xul:vbox>
 			</xul:vbox>
 		</content>
 		
@@ -137,7 +138,18 @@
                 <body><![CDATA[
                     wCore.debug(wCore.dump(result));
                     this.data = result.contents;
-                    this.getElementByAnonId('headermsg').textContent = this.data.headerMsg;
+                    if ('headerMsg' in this.data)
+                    {
+                    	this.getElementByAnonId('headermsg').textContent = this.data.headerMsg;
+                    	this.getElementByAnonId('header').setAttribute('class', 'warn');
+                    	this.getElementByAnonId('scrollctrl').collapsed = false;            	
+                    }
+                    else
+                    {
+                    	this.getElementByAnonId('header').setAttribute('class', 'ready');
+                    	this.getElementByAnonId('headermsg').textContent = "${transui:m.updater.bo.general.header-ready,js}";
+                    }
+                    
                     this.refreshLangPackUI();
                     this.refreshPatchUI();
                     this.refreshHotfixUI();

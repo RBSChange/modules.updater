@@ -5,6 +5,6 @@
 
 	<systemfolder module="task" relatedmodule="updater">
 		<plannedtask bySystemtaskclassname="updater_BackgroundCheckUpdateTask" label="updater_BackgroundCheckUpdateTask"
-			hour="-1" minute="-1" maxduration="2" />
+			hour="-1" minute="-1" maxduration="2" nextrundate="2010-01-01 00:00:00"/>
 	</systemfolder>
 </script>

@@ -76,8 +76,7 @@ class updater_LoadUpdateAction extends f_action_BaseJSONAction
 		}
 		else
 		{
-			$result['headerMsg'] = LocaleService::getInstance()->transBO('m.updater.bo.general.header-ready');
-			
+			// $result['headerMsg'] = LocaleService::getInstance()->transBO('m.updater.bo.general.header-ready');
 		}
 		return $this->sendJSON($result);
 	}
