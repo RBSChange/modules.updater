@@ -1,3 +1,19 @@
 cupdaterview{
 	-moz-binding: url(binding:modules.updater.updaterview#cUpdaterView);
 }
+
+cupdaterview .console-caption {
+	font-style: normal;
+	font-weight: bold;
+	padding-bottom: 10px;
+	padding-left: 10px;
+	padding-top: 5px;
+}
+
+cupdaterview description[anonid="headermsg"] {
+	font-style: normal;
+	font-weight: bold;
+	padding-bottom: 10px;	
+	padding-left: 10px;
+	padding-top: 5px;
+}

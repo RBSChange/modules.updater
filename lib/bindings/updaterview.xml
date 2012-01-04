@@ -54,7 +54,7 @@
 						  </xul:grid>
 						</xul:groupbox>
 						
-						<xul:groupbox  anonid="upgradegroup" collapsed="true">
+						<xul:groupbox anonid="upgradegroup" collapsed="true">
 						  <xul:caption label="${transui:m.updater.bo.general.upgrade-caption,attr,ucf}"/>
 						  <xul:grid anonid="upgradegrid">
 						    <xul:columns>
@@ -71,8 +71,8 @@
 					<xul:splitter>
 					</xul:splitter>
 					
-					<xul:scrollbox anonid="scrollctrl" flex="1"	orient="vertical">	
-						<xul:label value="${transui:m.updater.bo.general.log-caption,attr,ucf,lab}" />		
+					<xul:scrollbox anonid="scrollctrl" flex="1"	 style="overflow: auto;" orient="vertical">	
+						<xul:label class="console-caption" value="${transui:m.updater.bo.general.log-caption,attr,ucf,lab}" />		
 						<xul:grid anonid="loggrid" flex="1">
 							    <xul:columns>
 							      <xul:column flex="1"/>
