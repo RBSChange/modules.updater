@@ -45,6 +45,18 @@ class updater_ApplyHotFixAction extends f_action_BaseJSONAction
 								$bootStrap->cleanDependenciesCache();
 								updater_ModuleService::getInstance()->refreshHotFixList();
 								$this->log('Hotfix succefully installed');
+								
+
+								$patches = PatchService::resetInstance()->check();
+								foreach ($patches as $packageName => $patchList)
+								{
+									$module = str_replace('modules_', '', $packageName);
+									foreach ($patchList as $patchName)
+									{
+										$this->log('Install patch ' . $module . ' ' . $patchName);
+										$this->applyPatch($module, $patchName);
+									}
+								}
 							}
 							else
 							{
@@ -74,6 +86,49 @@ class updater_ApplyHotFixAction extends f_action_BaseJSONAction
 		}
 		
 		return $this->sendJSON(array('logs' => $this->logs));
+	}
+	
+	function applyPatch($moduleName, $patchNumber)
+	{
+
+		$className = $moduleName . '_patch_' . $patchNumber;
+		if ($moduleName == "framework")
+		{
+			$patchPath = f_util_FileUtils::buildWebeditPath($moduleName, "patch", $patchNumber, "install.php");
+		}
+		else
+		{
+			$patchPath = f_util_FileUtils::buildWebeditPath("modules", $moduleName, "patch", $patchNumber, "install.php");
+		}
+			
+		if (file_exists($patchPath))
+		{
+			require_once($patchPath);
+			if (class_exists($className, false))
+			{
+				ob_start();
+				try
+				{
+					//Constructor called with this for logging
+					$patch = new $className($this);
+					
+					/* @var $patch patch_BasePatch */					
+					$patch->executePatch();
+					PatchService::getInstance()->patchApply($moduleName, $patchNumber, $patch->isCodePatch());
+				} 
+				catch (Exception $e) 
+				{
+					Framework::exception($e);
+					$this->log($e->getMessage(), 'warn');
+				}
+				
+				$result = ob_get_clean();
+				if (!empty($result))
+				{
+					array_unshift($this->logs, array('info', $result));
+				}
+			}
+		}
 	}
 	
 	/**

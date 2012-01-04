@@ -11,38 +11,46 @@ class updater_ApplyPatchAction extends f_action_BaseJSONAction
 	 */
 	public function _execute($context, $request)
 	{
-		$patch = $request->getParameter('patch');
-		if (preg_match('/^([a-z0-9]+) ([0-9]{4})$/', $patch, $match))
+		if ($request->getParameter('init') == 'true')
 		{
-			list(, $moduleName, $patchNumber) = $match;
-			// Get a instance of class
-			$className = $moduleName . '_patch_' . $patchNumber;
-			if ($moduleName == "framework")
+			PatchService::getInstance()->updateRepository();
+			$this->log('Patch repository successfully updated');
+		}
+		else
+		{
+			$patch = $request->getParameter('patch');
+			if (preg_match('/^([a-z0-9]+) ([0-9]{4})$/', $patch, $match))
 			{
-				$patchPath = f_util_FileUtils::buildWebeditPath($moduleName, "patch", $patchNumber, "install.php");
-			}
-			else
-			{
-				$patchPath = f_util_FileUtils::buildWebeditPath("modules", $moduleName, "patch", $patchNumber, "install.php");
-			}
-			
-			if (file_exists($patchPath))
-			{
-				require_once($patchPath);
-				if (class_exists($className, false))
+				list(, $moduleName, $patchNumber) = $match;
+				// Get a instance of class
+				$className = $moduleName . '_patch_' . $patchNumber;
+				if ($moduleName == "framework")
 				{
-
-					ob_start();
-					
-					//Constructor called with this for logging
-					$patch = new $className($this);
-					$patch->executePatch();
-					PatchService::getInstance()->patchApply($moduleName, $patchNumber, $patch->isCodePatch());
-					
-					$result = ob_get_clean();
-					if (!empty($result)) 
+					$patchPath = f_util_FileUtils::buildWebeditPath($moduleName, "patch", $patchNumber, "install.php");
+				}
+				else
+				{
+					$patchPath = f_util_FileUtils::buildWebeditPath("modules", $moduleName, "patch", $patchNumber, "install.php");
+				}
+				
+				if (file_exists($patchPath))
+				{
+					require_once($patchPath);
+					if (class_exists($className, false))
 					{
-						array_unshift($this->logs, array('info', $result));
+	
+						ob_start();
+						
+						//Constructor called with this for logging
+						$patch = new $className($this);
+						$patch->executePatch();
+						PatchService::getInstance()->patchApply($moduleName, $patchNumber, $patch->isCodePatch());
+						
+						$result = ob_get_clean();
+						if (!empty($result)) 
+						{
+							array_unshift($this->logs, array('info', $result));
+						}
 					}
 				}
 			}
