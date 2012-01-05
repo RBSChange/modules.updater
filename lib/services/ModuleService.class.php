@@ -95,7 +95,7 @@ class updater_ModuleService extends ModuleBaseService
 	 * @param string $releaseName
 	 * @return f_util_DOMDocument || null
 	 */
-	public function getReleaseDocument($releaseName)
+	protected function getReleaseDocument($releaseName)
 	{
 		$bootStrap = new c_ChangeBootStrap(WEBEDIT_HOME);
 		foreach ($bootStrap->getRemoteRepositories() as $baseURL) 
@@ -107,7 +107,12 @@ class updater_ModuleService extends ModuleBaseService
 			{
 				try 
 				{
-					return f_util_DOMUtils::fromString($data);
+					$doc = f_util_DOMUtils::fromString($data);
+					$elem = $doc->findUnique("//lib[@name='migration']");
+					if ($elem)
+					{
+						return $doc;
+					}
 				}
 				catch (Exception $e)
 				{
