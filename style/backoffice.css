@@ -38,3 +38,12 @@ cupdaterview hbox.warn {
 cupdaterview hbox.ready {
 	background-color: #AEFFB3;
 }
+
+cupdaterview vbox[anonid="intro"] {
+	-moz-appearance: none;
+	padding: 5px 5px 5px 5px;
+	margin: 5px;
+	border: 1px solid gainsboro;
+	-moz-border-radius: 5px;
+	background-color: #AEFFB3;
+}

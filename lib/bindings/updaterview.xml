@@ -13,16 +13,22 @@
 				  </xul:toolbar>
 				</xul:toolbox>
 				<xul:vbox flex="1">		
-					<xul:scrollbox flex="1" style="overflow: auto;" orient="vertical">
+					<xul:scrollbox flex="1" style="overflow: auto;min-height:300px" orient="vertical">
+						<xul:vbox anonid="intro">	
+							<xul:description>${transui:m.updater.bo.general.intro}</xul:description>
+							<xul:checkbox anonid="accepted" label="${transui:m.updater.bo.general.intro-checked,ucf,attr}"></xul:checkbox>
+						</xul:vbox>
+						
 						<xul:hbox anonid="header">	
 							<xul:description anonid="headermsg"></xul:description>	
-						</xul:hbox>					
+						</xul:hbox>		
+									
 						<xul:groupbox anonid="langpackgroup" collapsed="true">
 						  <xul:caption label="${transui:m.updater.bo.general.lang-pack-caption,attr,ucf}"/>
 						  <xul:grid anonid="langpackgrid">
 						    <xul:columns>
-						      <xul:column flex="1"/>
 						      <xul:column />
+						      <xul:column flex="1"/>
 						    </xul:columns>
 						    <xul:rows anonid="langpackgridrows">				    	
 						    </xul:rows>
@@ -33,13 +39,13 @@
 						  <xul:caption label="${transui:m.updater.bo.general.patch-caption,attr,ucf}"/>
 						  <xul:grid anonid="patchgrid">
 						    <xul:columns>
-						      <xul:column flex="1"/>
 						      <xul:column />
+						      <xul:column flex="1"/>
 						    </xul:columns>
 						    <xul:rows anonid="patchgridrows">						    	
 						    </xul:rows>
 						  </xul:grid>
-						  <xul:button label="${transui:m.updater.bo.general.ignore-patch,attr,ucf}" 
+						  <xul:button label="${transui:m.updater.bo.general.ignore-patch,attr,ucf}" xbl:inherits="disabled"
 						  	oncommand="this.disabled = true; document.getBindingParent(this).ignorePatchList(this);"/>
 						</xul:groupbox>
 						
@@ -47,8 +53,8 @@
 						  <xul:caption label="${transui:m.updater.bo.general.hotfix-caption,attr,ucf}"/>
 						  <xul:grid anonid="hotfixgrid">
 						    <xul:columns>
-						      <xul:column flex="1"/>
 						      <xul:column />
+						      <xul:column flex="1"/>
 						    </xul:columns>
 						    <xul:rows anonid="hotfixgridrows">						    	
 						    </xul:rows>
@@ -59,20 +65,22 @@
 						  <xul:caption label="${transui:m.updater.bo.general.upgrade-caption,attr,ucf}"/>
 						  <xul:grid anonid="upgradegrid">
 						    <xul:columns>
-						      <xul:column flex="1"/>
 						      <xul:column />
+						      <xul:column flex="1"/>
 						    </xul:columns>
 						    <xul:rows anonid="upgradegridrows">
 						    	
 						    </xul:rows>
 						  </xul:grid>
-						</xul:groupbox>						
+						</xul:groupbox>		
+						
+						<xul:spacer />				
 					</xul:scrollbox>
 					
 					<xul:splitter>
 					</xul:splitter>
 					
-					<xul:scrollbox collapsed="true" anonid="scrollctrl" flex="1"	 style="overflow: auto;" orient="vertical">	
+					<xul:scrollbox collapsed="true" anonid="scrollctrl" flex="1" style="overflow: auto;" orient="vertical">	
 						<xul:label class="console-caption" value="${transui:m.updater.bo.general.log-caption,attr,ucf,lab}" />		
 						<xul:grid anonid="loggrid" flex="1">
 							    <xul:columns>
@@ -136,7 +144,8 @@
             <method name="onLoadUpdate">
                 <parameter name="result"/>
                 <body><![CDATA[
-                    wCore.debug(wCore.dump(result));
+                    //wCore.debug(wCore.dump(result));
+                    
                     this.data = result.contents;
                     if ('headerMsg' in this.data)
                     {
@@ -172,14 +181,16 @@
 							var row = this.data.langPack[i];
 							var baseKey = row[0];
 							var rowNode = document.createElement('row');
-							var col = rowNode.appendChild(document.createElement('label'));
-							col.setAttribute('value', row[2] + ' (' + row[1] + ')');
 							
-							col = rowNode.appendChild(document.createElement('button'));
+							var col = rowNode.appendChild(document.createElement('button'));
 							col.setAttribute('label', "${transui:m.updater.bo.general.apply-button,ucf,js}");
 							col.setAttribute('data-baseKey', baseKey);
 							if (this.disabled) {col.setAttribute('disabled', 'true');}
-							col.setAttribute('oncommand', "this.disabled = true; document.getBindingParent(this).applyLangPack(this.getAttribute('data-baseKey'));");	
+							col.setAttribute('oncommand', "this.disabled = true; document.getBindingParent(this).applyLangPack(this, this.getAttribute('data-baseKey'));");
+							
+							col = rowNode.appendChild(document.createElement('label'));
+							col.setAttribute('value', row[2] + ' (' + row[1] + ')');
+															
 							gridRows.appendChild(rowNode);
 						}
 					}
@@ -190,10 +201,26 @@
                 ]]></body>
             </method>
             
- 
+ 			<method name="checkIntro">
+                 <body><![CDATA[
+                 	if (this.getElementByAnonId('accepted').checked)
+                 	{
+                 		return true;
+                 	}
+                 	alert("${transui:m.updater.bo.general.intro-no-checked,ucf,js}");
+                 	return false;
+                 ]]></body>
+            </method>	                
+                 			
             <method name="applyLangPack">
-            	 <parameter name="baseKey"/>
+            	<parameter name="button"/>
+            	<parameter name="baseKey"/>
                 <body><![CDATA[
+                	if (!this.checkIntro())
+                	{
+                		button.disabled = false;
+                		return;
+                	}
                 	var me = this;				
 					var callBack = function(result) {
 						me.clearLog();
@@ -222,8 +249,7 @@
 					if (this.data.hasPatch)
 					{
 						this.getElementByAnonId('patchgroup').collapsed = false;
-						for (var i = 0; i < this.data.patch.length; i++)	
-						for (var package in this.data.patch)
+						for (var i = 0; i < this.data.patch.length; i++)
 						{
 							var row = this.data.patch[i];
 							var package = row[0];
@@ -231,13 +257,16 @@
 							var patch = package + ' ' + patchNumber;
 							
 							var rowNode = document.createElement('row');
-							var col = rowNode.appendChild(document.createElement('label'));
-							col.setAttribute('value', row[2] + ' ' + patchNumber);						
-							col = rowNode.appendChild(document.createElement('button'));
+					
+							var col = rowNode.appendChild(document.createElement('button'));
 							col.setAttribute('label', "${transui:m.updater.bo.general.apply-button,ucf,js}");
 							col.setAttribute('data-patch', patch);
 							if (this.disabled) {col.setAttribute('disabled', 'true');}
-							col.setAttribute('oncommand', "this.disabled = true; document.getBindingParent(this).applyPatch(this.getAttribute('data-patch'));");	
+							col.setAttribute('oncommand', "this.disabled = true; document.getBindingParent(this).applyPatch(this, this.getAttribute('data-patch'));");	
+							
+							col = rowNode.appendChild(document.createElement('label'));
+							col.setAttribute('value', row[2] + ' ' + patchNumber);	
+							
 							gridRows.appendChild(rowNode);
 						}
 					}
@@ -249,8 +278,14 @@
             </method>
             
             <method name="applyPatch">
-            	 <parameter name="patch"/>
+            	<parameter name="button"/>
+            	<parameter name="patch"/>
                 <body><![CDATA[
+                    if (!this.checkIntro())
+                	{
+                		button.disabled = false;
+                		return;
+                	}
                 	var me = this;				
 					var callBack = function(result) {me.onPatchExecuted(result);};
 					wCore.executeJSON('updater', 'ApplyPatch', {patch: patch}, callBack, true);
@@ -260,6 +295,12 @@
             <method name="ignorePatchList">
             	<parameter name="button"/>
                 <body><![CDATA[
+                    if (!this.checkIntro())
+                	{
+                		button.disabled = false;
+                		return;
+                	}
+                	
                 	if (confirm("${transui:m.updater.bo.general.ignore-patch-confirm,ucf,js}"))
                 	{
 	                	var me = this;				
@@ -309,15 +350,16 @@
 						{
 							var hotFix = this.data.hotFix[i];
 							var rowNode = document.createElement('row');
-							var col = rowNode.appendChild(document.createElement('label'));
-							col.setAttribute('value', hotFix);
 							
-							col = rowNode.appendChild(document.createElement('button'));
+							var col = rowNode.appendChild(document.createElement('button'));
 							col.setAttribute('label', "${transui:m.updater.bo.general.apply-button,ucf,js}");
 							col.setAttribute('data-hotFix', hotFix);
-							if (this.disabled || this.data.hasPatch || i > 0) {col.setAttribute('disabled', 'true');}
-							
-							col.setAttribute('oncommand', "this.disabled = true; document.getBindingParent(this).applyHotfix(this.getAttribute('data-hotFix'));");	
+							col.setAttribute('oncommand', "this.disabled = true; document.getBindingParent(this).applyHotfix(this, this.getAttribute('data-hotFix'));");
+							if (this.disabled || this.data.hasPatch || i > 0) {col.setAttribute('disabled', 'true');}							
+								
+							col = rowNode.appendChild(document.createElement('label'));
+							col.setAttribute('value', hotFix);
+
 							gridRows.appendChild(rowNode);
 						}
 					}
@@ -329,8 +371,14 @@
             </method>     
             
             <method name="applyHotfix">
-            	 <parameter name="hotFix"/>
+            	<parameter name="button"/>
+            	<parameter name="hotFix"/>
                 <body><![CDATA[
+                    if (!this.checkIntro())
+                	{
+                		button.disabled = false;
+                		return;
+                	}           
                 	var me = this;				
 					var callBack = function(result) {me.onHotFixExecuted(result);};
 					wCore.executeJSON('updater', 'ApplyHotFix', {hotFix: hotFix}, callBack, true);
@@ -370,16 +418,17 @@
 						
 						var upgrade = this.data.upgrade;
 						var rowNode = document.createElement('row');
-						var col = rowNode.appendChild(document.createElement('label'));
-						col.setAttribute('value', upgrade);
 						
-						col = rowNode.appendChild(document.createElement('button'));
+						var col = rowNode.appendChild(document.createElement('button'));
 						col.setAttribute('label', "${transui:m.updater.bo.general.download-button,ucf,js}");
 						col.setAttribute('anonid', 'upgradebutton');
 						col.setAttribute('data-upgrade', upgrade);
+						col.setAttribute('oncommand', "this.disabled = true; document.getBindingParent(this).downloadUpgrade(this, this.getAttribute('data-upgrade'));");	
 						if (this.disabled || this.data.hasPatch || this.data.hasHotFix) {col.setAttribute('disabled', 'true');}
 						
-						col.setAttribute('oncommand', "this.disabled = true; document.getBindingParent(this).downloadUpgrade(this.getAttribute('data-upgrade'));");	
+						col = rowNode.appendChild(document.createElement('label'));
+						col.setAttribute('value', upgrade);
+						
 						gridRows.appendChild(rowNode);
 					}
 					else
@@ -390,8 +439,14 @@
             </method>     
             
             <method name="downloadUpgrade">
-            	 <parameter name="upgrade"/>
+            	<parameter name="button"/>
+            	<parameter name="upgrade"/>
                 <body><![CDATA[
+                    if (!this.checkIntro())
+                	{
+                		button.disabled = false;
+                		return;
+                	} 
                 	var me = this;				
 					var callBack = function(result) {me.onDownloadedUpgrade(result)};
 					wCore.executeJSON('updater', 'DownloadUpgrade', {upgrateto: upgrade}, callBack, true);
@@ -417,6 +472,7 @@
                 			upgradebutton.setAttribute('label', "${transui:m.updater.bo.general.apply-button,ucf,js}");
                 			upgradebutton.setAttribute('oncommand', "this.disabled = true; document.getBindingParent(this).applyUpgrade(this, this.getAttribute('data-upgrade'));");
                 			upgradebutton.disabled = false;
+                			upgradebutton.focus();
                 		}
                 	}
                 	else
