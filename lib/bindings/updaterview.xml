@@ -415,7 +415,7 @@
                 		{
                 			var upgradebutton = this.getElementByAnonId('upgradebutton');
                 			upgradebutton.setAttribute('label', "${transui:m.updater.bo.general.apply-button,ucf,js}");
-                			upgradebutton.setAttribute('oncommand', "this.disabled = true; document.getBindingParent(this).applyUpgrade(this.getAttribute('data-upgrade'));");
+                			upgradebutton.setAttribute('oncommand', "this.disabled = true; document.getBindingParent(this).applyUpgrade(this, this.getAttribute('data-upgrade'));");
                 			upgradebutton.disabled = false;
                 		}
                 	}
@@ -427,8 +427,15 @@
             </method>
             
             <method name="applyUpgrade">
-            	 <parameter name="upgrade"/>
-                <body><![CDATA[			
+            	<parameter name="button"/>
+            	<parameter name="upgrade"/>
+                <body><![CDATA[		
+                	if (!confirm("${transui:m.updater.bo.general.apply-upgrade-confirm,ucf,js}"))
+                	{
+                		button.disabled = false;
+                		return;
+                	}
+                	
 					this.clearLog();
 					var requestUrl = Context.UIBASEURL + '/migration/migrateweb.php';
 					var req = new XMLHttpRequest();
@@ -469,11 +476,17 @@
              			try
              			{
 	             			var result = wCore.parseJSON(req.responseText);
+	             			var logRow = null;
 	             			for (var i = 0; i < result.logs.length; i++)
 	                		{
 	                			var log = result.logs[i];
-	                			this.log(log[1], log[0]);
+	                			logRow = this.log(log[1], log[0]);
 	                		}
+	                		if (logRow)
+	                		{
+	                			var xpcomInterface = this.getElementByAnonId('scrollctrl').boxObject.QueryInterface(Components.interfaces.nsIScrollBoxObject);
+   								xpcomInterface.ensureElementIsVisible(logRow);
+   							}
 	                		return true;
 	                	}
              			catch (e)
@@ -510,7 +523,7 @@
 					
 					col = rowNode.appendChild(document.createElement('label'));
 					col.textContent = string;
-					gridRows.appendChild(rowNode);
+					return gridRows.appendChild(rowNode);
                 ]]></body>
             </method>                              		
 		</implementation>
