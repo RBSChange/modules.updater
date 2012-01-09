@@ -503,30 +503,48 @@
 					{
 						var result = wCore.parseJSON(req.responseText);
 						this.log(result.steps.length + ' steps in upgrade', 'info');
-						for (var i = 0; i < result.steps.length; i++)
-						{
-							this.log("${transui:m.updater.bo.general.log-start-step,ucf,lab,js}" + (i + 1) + ' - '  + result.steps[i] + '...', 'info');
-							if (!this.executeUpgradeStep(i))
-							{
-								this.log("${transui:m.updater.bo.general.log-upgrade-failure,ucf,js}", 'info');
-								retrun;
-							}
-						}
-						this.log("${transui:m.updater.bo.general.log-upgrade-success,ucf,js}", 'info');
-						this.forceRefresh();
+						this.installSteps = result.steps;
+						this.installStep = -1;
+						this.executeUpgradeStep();
 					}
                 ]]></body>
             </method> 
             
+            <field name="installSteps">null</field>
+            <field name="installStep">0</field>
+            
              <method name="executeUpgradeStep">
-             	<parameter name="stepIndex"/>
-             	<body><![CDATA[
+             	<body><![CDATA[            		
+             		this.installStep++;
+             		stepIndex = this.installStep;
+             		
+             		wCore.info('executeUpgradeStep: ' + stepIndex);
+             		if (stepIndex >= this.installSteps.length)
+             		{
+             			this.log("${transui:m.updater.bo.general.log-upgrade-success,ucf,js}", 'info');
+						this.forceRefresh();
+						return;
+             		}
+             		
+             		this.log("${transui:m.updater.bo.general.log-start-step,ucf,lab,js}" + (stepIndex + 1) + ' - '  + this.installSteps[stepIndex] + '...', 'info');
              		var requestUrl = Context.UIBASEURL + '/migration/migrateweb.php?execStep=' + stepIndex;
-					var req = new XMLHttpRequest();
-					req.open('POST', requestUrl, false);
+					var req = new XMLHttpRequest();				
+					req.open('POST', requestUrl, true);
 					req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 					req.setRequestHeader('Content-Length', 0);
+					
+					var me = this;
+					req.onreadystatechange = function (aEvt) {  
+						if (req.readyState == 4) {me.executeUpgradeStepCallBack(req);}  
+					};  
 					req.send(null);
+                ]]></body>
+            </method> 
+            
+           	<method name="executeUpgradeStepCallBack">
+            	<parameter name="req"/>
+             	<body><![CDATA[
+             		wCore.info('executeUpgradeStepCallBack: ' + req.status);
              		if (req.status != 0 && req.responseText != "")
              		{
              			try
@@ -543,7 +561,8 @@
 	                			var xpcomInterface = this.getElementByAnonId('scrollctrl').boxObject.QueryInterface(Components.interfaces.nsIScrollBoxObject);
    								xpcomInterface.ensureElementIsVisible(logRow);
    							}
-	                		return true;
+	                		this.executeUpgradeStep();
+	                		return;
 	                	}
              			catch (e)
              			{
@@ -554,9 +573,9 @@
              		{
              			this.log("${transui:m.updater.bo.general.log-step-error,ucf,js}", 'fatal');
              		}
-             		return false
+             		this.log("${transui:m.updater.bo.general.log-upgrade-failure,ucf,js}", 'fatal');
                 ]]></body>
-            </method> 
+            </method>            
                                 
              <method name="clearLog">
                 <body><![CDATA[
