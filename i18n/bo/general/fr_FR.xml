@@ -36,9 +36,9 @@
   
   <key id="intro" format="html"><![CDATA[
   	<html:b>Système de mise à jour automatisé</html:b><html:br />
-  	<html:p>Pour rappel : Avant toutes mises à jour, vous devez procéder à une sauvegarde de votre système ainsi que de vos données.</html:p>
-  	<html:p>Les mises à jours s'appliquent sur les versions standards des modules, nous ne garantissons pas la continuité du fonctionnement dans les parties spécifiques de votre site.</html:p>
-  	<html:p>L'éditeur du logiciel se décharge de toutes responsabilités quant à la perte de données lors d'une mise à jour.</html:p>
+  	<html:p>RAPPEL IMPORTANT : Avant toutes mises à jour, vous devez procéder à une sauvegarde de votre système et de vos données.</html:p>
+  	<html:p>Les mises à jour s'appliquent aux versions standards des modules. Nous ne garantissons pas la continuité du fonctionnement dans les parties spécifiques de votre site.</html:p>
+  	<html:p>L'éditeur du logiciel ne peut être tenu pour responsable en cas de perte de données lors d'une mise à jour.</html:p>
   	<html:p>Il incombe à l'administrateur du site de s'assurer de la qualité de la sauvegarde des données avant de procéder aux mises à jour.</html:p>
 ]]></key>
 
