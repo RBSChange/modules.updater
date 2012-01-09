@@ -42,7 +42,7 @@
   	<html:p>Il incombe à l'administrateur du site de s'assurer de la qualité de la sauvegarde des données avant de procéder aux mises à jour.</html:p>
 ]]></key>
 
-  <key id="intro-checked">J'ai pris connaissance des procédures et j'en accepte les termes</key>
+  <key id="intro-checked">J'ai pris connaissance des procédures et j'en accepte les termes.</key>
   
-  <key id="intro-no-checked">veuillez accepter les termes avant de poursuivre.</key>
+  <key id="intro-no-checked">Veuillez accepter les termes avant de poursuivre.</key>
 </i18n>
