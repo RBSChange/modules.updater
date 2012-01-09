@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<i18n baseKey="m.updater.bo.general" lcid="en_GB">
+  <key id="apply-button">Apply</key>
+  <key id="apply-upgrade-confirm">Please make sure that you have a recent backup of your project before proceeding. Are you sure you want to apply the update now?</key>
+  <key id="block-resume-hotfix">Hotfix</key>
+  <key id="block-resume-keys">{nbKeys} keys in {pack}</key>
+  <key id="block-resume-langpack">language pack</key>
+  <key id="block-resume-no-update">Your project is up to date</key>
+  <key id="block-resume-patch">Patch</key>
+  <key id="block-resume-title">Update</key>
+  <key id="block-resume-upgrade">Migration</key>
+  <key id="download-button">Download</key>
+  <key id="header-langupdate">language packs updates are available for your project</key>
+  <key id="header-ready">Your project is up to date.</key>
+  <key id="header-warning">Your project needs to be updated. Please backup your project before updating it.</key>
+  <key id="hotfix-caption">Hotfix</key>
+  <key id="ignore-patch">Ignore patches</key>
+  <key id="ignore-patch-confirm">Patches will be ignored, do you want to continue?</key>
+  <key id="intro" format="html"><![CDATA[
+    	<html:b>Automated update process/html:b><html:br />
+    	<html:p>IMPORTANT NOTICE : Before updating, you have to backup your system and data.</html:p>
+    	<html:p>Updates are meant to be applied on standard modules. We can not guarantee that the custom developpements on your project will work after the update.</html:p>
+    	<html:p>The software editor can not be held responsible in case of data loss during the update.</html:p>
+    	<html:p>It is the role of the website administrator to make sure complete backups are available for the project before proceeding with the updater</html:p>
+  ]]></key>
+  <key id="intro-checked">I have read the above terms and accept them.</key>
+  <key id="intro-no-checked">I have read the above procedure and accept it.</key>
+  <key id="lang-pack-caption">Language packs to update</key>
+  <key id="log-caption">update results</key>
+  <key id="log-start-step">Step execution</key>
+  <key id="log-step-error">Can not execute this step</key>
+  <key id="log-upgrade-failure">Update failed</key>
+  <key id="log-upgrade-success">Update succeeded</key>
+  <key id="module-name">Update</key>
+  <key id="patch-caption">Patches</key>
+  <key id="refresh-button">Refresh</key>
+  <key id="system-folder-name">Update</key>
+  <key id="upgrade-caption">Update</key>
+</i18n>
