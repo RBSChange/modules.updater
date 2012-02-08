@@ -45,6 +45,10 @@ class updater_DownloadUpgradeAction extends f_action_BaseJSONAction
 					$this->log('Migration script is installed localy');
 					$url = Framework::getUIBaseUrl() . '/migration/migrateweb.php?check=true';
 					$client = HTTPClientService::getInstance()->getNewHTTPClient();
+					
+					$client->setOption(CURLOPT_SSL_VERIFYPEER, FALSE);
+					$client->setOption(CURLOPT_SSL_VERIFYHOST, FALSE);
+					
 					$data = $client->get($url);
 					if ($client->getHTTPReturnCode() == 200 && !empty($data))
 					{
