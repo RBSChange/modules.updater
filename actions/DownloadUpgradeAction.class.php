@@ -16,6 +16,7 @@ class updater_DownloadUpgradeAction extends f_action_BaseJSONAction
 
 		if (empty($upgrateTo))
 		{
+
 			$this->log('Invalid upgrade: ' . $upgrateTo, 'error');
 		}
 		else
@@ -28,27 +29,27 @@ class updater_DownloadUpgradeAction extends f_action_BaseJSONAction
 			// require_once on cboot_ClassDirAnalyzer :: constructor
 			cboot_ClassDirAnalyzer::getInstance();
 						
-						
-			$upgrateToPath = $bootStrap->installComponent('lib', 'migration', $upgrateTo);				
-			if ($upgrateToPath !== null)
+			try
 			{
-				$this->log('Upgrade succefully installed in repository');	
+				$upgrateToPath = $bootStrap->downloadDependency(c_ChangeBootStrap::$DEP_LIB, 'migration', $upgrateTo);
+				
+				$this->log('Upgrade succefully installed in repository');
 				$migrationFolderPath = f_util_FileUtils::buildWebeditPath('migration');
-				$phpFilePath = $migrationFolderPath . '/migrateweb.php';	
-							
+				$phpFilePath = $migrationFolderPath . '/migrateweb.php';
+					
 				$moduleWebapp = f_util_FileUtils::buildWebeditPath('modules', 'updater', 'webapp', 'migration');
 				f_util_FileUtils::cp($moduleWebapp, $migrationFolderPath, f_util_FileUtils::OVERRIDE | f_util_FileUtils::APPEND);
 				f_util_FileUtils::cp($upgrateToPath, $migrationFolderPath, f_util_FileUtils::OVERRIDE | f_util_FileUtils::APPEND);
-
+				
 				if (is_readable($phpFilePath))
 				{
 					$this->log('Migration script is installed localy');
 					$url = Framework::getUIBaseUrl() . '/migration/migrateweb.php?check=true';
 					$client = HTTPClientService::getInstance()->getNewHTTPClient();
-					
+						
 					$client->setOption(CURLOPT_SSL_VERIFYPEER, FALSE);
 					$client->setOption(CURLOPT_SSL_VERIFYHOST, FALSE);
-					
+						
 					$data = $client->get($url);
 					if ($client->getHTTPReturnCode() == 200 && !empty($data))
 					{
@@ -65,12 +66,12 @@ class updater_DownloadUpgradeAction extends f_action_BaseJSONAction
 				else
 				{
 					$this->log('Unable to find migration script: ' . $phpFilePath, 'error');
-				}	
-			}
-			else
+				}
+			} 
+			catch (Exception $e) 
 			{
 				$this->log('Unable to download upgrade', 'error');
-			}
+			}			
 		}
 		
 		return $this->sendJSON(array('logs' => $this->logs, 'checked' => $checked));

@@ -2,7 +2,7 @@
 <i18n baseKey="m.updater.bo.general" lcid="en_GB">
   <key id="apply-button">Apply</key>
   <key id="apply-upgrade-confirm">Please make sure that you have a recent backup of your project before proceeding. Are you sure you want to apply the update now?</key>
-  <key id="block-resume-hotfix">Hotfix</key>
+
   <key id="block-resume-keys">{nbKeys} keys in {pack}</key>
   <key id="block-resume-langpack">language pack</key>
   <key id="block-resume-no-update">Your project is up to date</key>
@@ -13,7 +13,7 @@
   <key id="header-langupdate">language packs updates are available for your project</key>
   <key id="header-ready">Your project is up to date.</key>
   <key id="header-warning">Your project needs to be updated. Please backup your project before updating it.</key>
-  <key id="hotfix-caption">Hotfix</key>
+
   <key id="ignore-patch">Ignore patches</key>
   <key id="ignore-patch-confirm">Patches will be ignored, do you want to continue?</key>
   <key id="intro" format="html"><![CDATA[

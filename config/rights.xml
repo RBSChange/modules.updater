@@ -3,7 +3,6 @@
   <actions>
     <document name="rootfolder"/>
     <action name="UpdateLankPack" />
-    <action name="ApplyHotFix" />
     <action name="ApplyPatch" />
     <action name="DownloadUpgrade" />
   </actions>
@@ -11,7 +10,6 @@
     <role name="Admin">
       <permission name="*"/>
       <permission name="UpdateLankPack"/>
-      <permission name="ApplyHotFix"/>
       <permission name="ApplyPatch"/>
       <permission name="DownloadUpgrade"/>
     </role>

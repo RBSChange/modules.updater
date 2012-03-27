@@ -17,9 +17,6 @@ class updater_BlockResumeAction extends dashboard_BlockDashboardAction
 		}
 		$ums = updater_ModuleService::getInstance();
 		
-		$hotfixArray = $ums->getHotfixArray();
-		$request->setAttribute('hotfixArray', count($hotfixArray) ? $hotfixArray: null);
-		
 		$langPackArray = array();
 		foreach ($ums->getLangPackToUpdateArray() as $pack => $nbkey) 
 		{
@@ -39,7 +36,7 @@ class updater_BlockResumeAction extends dashboard_BlockDashboardAction
 		$upgrade = $ums->getUpgradeTo();
 		$request->setAttribute('upgradeTo', empty($upgrade) ? null : $upgrade);
 
-		$hasUpdate = count($hotfixArray) || count($langPackArray) || count($patchArray) || (!empty($upgrade));
+		$hasUpdate = count($langPackArray) || count($patchArray) || (!empty($upgrade));
 		
 		$request->setAttribute('hasUpdate', $hasUpdate);
 	}

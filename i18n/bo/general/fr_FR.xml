@@ -9,7 +9,6 @@
   <key id="block-resume-title">Mise à jour</key>
   <key id="block-resume-no-update">Votre projet est à jour</key>
     
-  <key id="block-resume-hotfix">Hotfix applicable</key>
   <key id="block-resume-patch">Patch applicable</key>
   <key id="ignore-patch">Ignorer les patchs listés</key>
   <key id="ignore-patch-confirm">Les patchs listés seront définitivement ingnoré, etes vous sur de vouloir continuer ?</key>
@@ -21,7 +20,7 @@
   <key id="refresh-button">Rafraichir</key>
   <key id="lang-pack-caption">Pack de langues à mettre à jour</key>
   <key id="patch-caption">Patchs à appliquer</key>
-  <key id="hotfix-caption">Hotfix à appliquer</key>
+
   <key id="upgrade-caption">Mise à jour à appliquer</key>
   <key id="apply-upgrade-confirm">Assurez vous de bien avoir sauvegarder votre projet avant de continuer. Etes vous sur, de vouloir appliquer la mise à jour maintenant ?</key>
   

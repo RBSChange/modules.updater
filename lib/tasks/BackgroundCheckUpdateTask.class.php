@@ -6,8 +6,6 @@ class updater_BackgroundCheckUpdateTask extends task_SimpleSystemTask
 	 */
 	protected function execute()
 	{
-		updater_ModuleService::getInstance()->refreshHotFixList();
-		
 		updater_ModuleService::getInstance()->refreshLangPackToUpdate();
 		
 		updater_ModuleService::getInstance()->refreshUpgradeList();

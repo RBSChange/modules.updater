@@ -22,57 +22,6 @@ class updater_ModuleService extends ModuleBaseService
 		return self::$instance;
 	}
 	
-	/**
-	 * @return array
-	 */
-	public function getHotfixArray()
-	{
-		$result = array();
-		$index = 0;
-		while (true)
-		{
-			$str = $this->getPersistentProvider()->getSettingValue('modules_updater', 'hotfixes_' . $index);
-			if (empty($str)) {break;}
-			$result[] = $str;
-			$index++;
-		}
-		return $result;
-	}
-	
-	public function refreshHotFixList()
-	{
-		$bootStrap = new c_ChangeBootStrap(WEBEDIT_HOME);
-		$hotfixes = $bootStrap->getHotfixes(Framework::getVersion());
-		$computedDeps = $this->getInstalledRepositoryPaths($bootStrap);
-		$hotfixesFiltered = array();
-		foreach ($hotfixes as  $hotfixPath)
-		{
-			list($hf_depType, $hf_componentName, $hf_version, $hf_hotFix) = $bootStrap->explodeRepositoryPath($hotfixPath);
-			$hfKey = $hf_depType .'/'. $hf_componentName .'/'. $hf_version;
-			if (isset($computedDeps[$hfKey]) && $hf_hotFix > $computedDeps[$hfKey])
-			{
-				$hotFixName = $hf_componentName . '-' . $hf_version . '-' . $hf_hotFix; 
-				$hotfixesFiltered[$hf_hotFix] = $hotFixName;
-			}
-		}
-		
-		$this->getTransactionManager()->beginTransaction();
-		if (count($hotfixesFiltered))
-		{
-			ksort($hotfixesFiltered, SORT_NUMERIC);
-			foreach (array_values($hotfixesFiltered) as $index => $value) 
-			{
-				$this->getPersistentProvider()->setSettingValue('modules_updater', 'hotfixes_' . $index, $value);
-			} 
-			$this->getPersistentProvider()->setSettingValue('modules_updater', 'hotfixes_' . ($index + 1), '');
-		}
-		else
-		{
-			$this->getPersistentProvider()->setSettingValue('modules_updater', 'hotfixes_0', '');
-		}
-		$this->getTransactionManager()->commit();
-	}
-	
 	public function refreshUpgradeList()
 	{
 		
@@ -130,25 +79,6 @@ class updater_ModuleService extends ModuleBaseService
 	{
 		$upgradeTo  = $this->getPersistentProvider()->getSettingValue('modules_updater', 'upgrate_to');
 		return (empty($upgradeTo)) ? null : $upgradeTo;
-	}
-	
-	/**
-	 * @param c_ChangeBootStrap $bootStrap
-	 */
-	protected function getInstalledRepositoryPaths($bootStrap)
-	{
-		$result = array();
-		$computedDeps = $bootStrap->getComputedDependencies();	
-		foreach ($computedDeps as $category => $components) 
-		{
-			if (!is_array($components)) {continue;}
-			foreach ($components as $componentName => $infos) 
-			{
-				list($depType, $componentName, $version, $hotFix) = $bootStrap->explodeRepositoryPath($infos['repoRelativePath']);
-					$result[$depType .'/'. $componentName .'/'. $version] = $hotFix ? $hotFix : 0;
-			}
-		}
-		return $result;
 	}
 	
 	/**

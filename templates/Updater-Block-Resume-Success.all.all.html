@@ -22,13 +22,6 @@
 			</ul>
 		</tal:block>
 					
-		<tal:block tal:condition="hotfixArray">
-			<span>${transui:m.updater.bo.general.block-resume-hotfix,ucf,lab}</span>
-			<ul>
-				<li tal:repeat="hotfix hotfixArray">${hotfix}</li>
-			</ul>
-		</tal:block>
-		
 		<tal:block tal:condition="upgradeTo">
 			<span>${transui:m.updater.bo.general.block-resume-upgrade,ucf,lab}</span>
 			<ul>

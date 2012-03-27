@@ -49,18 +49,6 @@
 						  	oncommand="this.disabled = true; document.getBindingParent(this).ignorePatchList(this);"/>
 						</xul:groupbox>
 						
-						<xul:groupbox anonid="hotfixgroup" collapsed="true">
-						  <xul:caption label="${transui:m.updater.bo.general.hotfix-caption,attr,ucf}"/>
-						  <xul:grid anonid="hotfixgrid">
-						    <xul:columns>
-						      <xul:column />
-						      <xul:column flex="1"/>
-						    </xul:columns>
-						    <xul:rows anonid="hotfixgridrows">						    	
-						    </xul:rows>
-						  </xul:grid>
-						</xul:groupbox>
-						
 						<xul:groupbox anonid="upgradegroup" collapsed="true">
 						  <xul:caption label="${transui:m.updater.bo.general.upgrade-caption,attr,ucf}"/>
 						  <xul:grid anonid="upgradegrid">
@@ -161,7 +149,6 @@
                     
                     this.refreshLangPackUI();
                     this.refreshPatchUI();
-                    this.refreshHotfixUI();
                     this.refreshUpgradeUI();
                 ]]></body>
             </method>		
@@ -335,76 +322,7 @@
                 ]]></body>
             </method>   
             
-            <method name="refreshHotfixUI">
-                <body><![CDATA[
-                   	var gridRows = this.getElementByAnonId('hotfixgridrows');
-                   	if (gridRows.hasChildNodes())
-                   	{
-                   		while (gridRows.lastChild) {gridRows.removeChild(gridRows.lastChild);}
-                   	}
-					if (this.data.hasHotFix)
-					{
-						this.getElementByAnonId('hotfixgroup').collapsed = false;
-						
-						for (var i = 0; i < this.data.hotFix.length; i++)
-						{
-							var hotFix = this.data.hotFix[i];
-							var rowNode = document.createElement('row');
-							
-							var col = rowNode.appendChild(document.createElement('button'));
-							col.setAttribute('label', "${transui:m.updater.bo.general.apply-button,ucf,js}");
-							col.setAttribute('data-hotFix', hotFix);
-							col.setAttribute('oncommand', "this.disabled = true; document.getBindingParent(this).applyHotfix(this, this.getAttribute('data-hotFix'));");
-							if (this.disabled || this.data.hasPatch || i > 0) {col.setAttribute('disabled', 'true');}							
-								
-							col = rowNode.appendChild(document.createElement('label'));
-							col.setAttribute('value', hotFix);
-
-							gridRows.appendChild(rowNode);
-						}
-					}
-					else
-					{
-						this.getElementByAnonId('hotfixgroup').collapsed = true;
-					} 
-                ]]></body>
-            </method>     
-            
-            <method name="applyHotfix">
-            	<parameter name="button"/>
-            	<parameter name="hotFix"/>
-                <body><![CDATA[
-                    if (!this.checkIntro())
-                	{
-                		button.disabled = false;
-                		return;
-                	}           
-                	var me = this;				
-					var callBack = function(result) {me.onHotFixExecuted(result);};
-					wCore.executeJSON('updater', 'ApplyHotFix', {hotFix: hotFix}, callBack, true);
-                ]]></body>
-            </method>    
-            
-            <method name="onHotFixExecuted">
-            	<parameter name="result"/>
-                <body><![CDATA[
-                	this.clearLog();
-                	if (result.status == 'OK')
-                	{
-                		for (var i = 0; i < result.contents.logs.length; i++)
-                		{
-                			var log = result.contents.logs[i];
-                			this.log(log[1], log[0]);
-                		}
-                	}
-                	else
-                	{
-                		this.log(result.contents.errorMessage, 'error');
-                	}
-                	this.reload();
-                ]]></body>
-            </method>       
-            
+    
            <method name="refreshUpgradeUI">
                 <body><![CDATA[
                    	var gridRows = this.getElementByAnonId('upgradegridrows');
@@ -424,7 +342,7 @@
 						col.setAttribute('anonid', 'upgradebutton');
 						col.setAttribute('data-upgrade', upgrade);
 						col.setAttribute('oncommand', "this.disabled = true; document.getBindingParent(this).downloadUpgrade(this, this.getAttribute('data-upgrade'));");	
-						if (this.disabled || this.data.hasPatch || this.data.hasHotFix) {col.setAttribute('disabled', 'true');}
+						if (this.disabled || this.data.hasPatch) {col.setAttribute('disabled', 'true');}
 						
 						col = rowNode.appendChild(document.createElement('label'));
 						col.setAttribute('value', upgrade);

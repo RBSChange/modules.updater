@@ -14,7 +14,6 @@ class updater_LoadUpdateAction extends f_action_BaseJSONAction
 		$ums = updater_ModuleService::getInstance();
 		if ($request->getParameter('forcerefresh'))
 		{
-			$ums->refreshHotFixList();	
 			$ums->refreshLangPackToUpdate();
 			$ums->refreshUpgradeList();
 		}
@@ -57,15 +56,10 @@ class updater_LoadUpdateAction extends f_action_BaseJSONAction
 		}
 		$result['hasPatch'] = count($result['patch']) > 0;
 		
-		
-		$result['hotFix'] = $ums->getHotfixArray();
-		$result['hasHotFix'] = count($result['hotFix']) > 0;
-		
-		
 		$result['upgrade'] = $ums->getUpgradeTo();
 		$result['hasUpgrade'] = ! (empty($result['upgrade']));
 		
-		$result['isReady'] =  !$result['hasHotFix'] && !$result['hasPatch'] && !$result['hasUpgrade'];
+		$result['isReady'] =  !$result['hasPatch'] && !$result['hasUpgrade'];
 		if (!$result['isReady'])
 		{
 			$result['headerMsg'] = LocaleService::getInstance()->transBO('m.updater.bo.general.header-warning');

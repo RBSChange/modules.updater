@@ -90,35 +90,35 @@ class commands_updater_Migrate extends commands_AbstractChangeCommand
 	function executeDownload($upgrateTo)
 	{
 		$bootStrap = $this->getParent()->getBootStrap();
-		$upgrateToPath = $bootStrap->installComponent('lib', 'migration', $upgrateTo);				
-		if ($upgrateToPath !== null)
+		try
 		{
-			$this->log('Upgrade succefully installed in repository');	
+			$upgrateToPath = $bootStrap->downloadDependency(c_ChangeBootStrap::$DEP_LIB, 'migration', $upgrateTo);
+			$this->log('Upgrade succefully installed in repository');
 			$migrationFolderPath = f_util_FileUtils::buildWebeditPath('migration');
-			$phpFilePath = $migrationFolderPath . '/migrate.php';	
-						
+			$phpFilePath = $migrationFolderPath . '/migrate.php';
+			
 			$moduleWebapp = f_util_FileUtils::buildWebeditPath('modules', 'updater', 'webapp', 'migration');
 			f_util_FileUtils::cp($moduleWebapp, $migrationFolderPath, f_util_FileUtils::OVERRIDE | f_util_FileUtils::APPEND);
 			f_util_FileUtils::cp($upgrateToPath, $migrationFolderPath, f_util_FileUtils::OVERRIDE | f_util_FileUtils::APPEND);
-
+			
 			if (is_readable($phpFilePath))
 			{
 				$this->log('Migration script is installed localy');
-				
+			
 				require_once $phpFilePath;
 				$migscript = new c_ChangeMigrationScript();
 				if ($migscript->check())
 				{
 					return $this->quitOk("Upgrade ready to apply");
-				} 
+				}
 				return $this->quitError('Upgarde not applicable');
 			}
 			else
 			{
 				return $this->quitError('Unable to find migration script: ' . $phpFilePath);
-			}	
-		}
-		else
+			}
+		} 
+		catch (Exception $e) 
 		{
 			return $this->quitError('Unable to download upgrade');
 		}
