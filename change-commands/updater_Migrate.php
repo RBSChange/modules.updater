@@ -1,17 +1,13 @@
 <?php
 class commands_updater_Migrate extends commands_AbstractChangeCommand
 {
-	function isHidden()
-	{
-		return true;
-	}
 	
 	/**
 	 * @return String
 	 */
 	function getUsage()
 	{
-		return "[apply|download|refresh]";
+		return "[apply|download|refresh] [--check]";
 	}
 	
 
