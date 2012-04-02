@@ -92,8 +92,9 @@ class commands_updater_Migrate extends commands_AbstractChangeCommand
 		$bootStrap = $this->getParent()->getBootStrap();
 		try
 		{
-			$upgrateToPath = $bootStrap->downloadDependency(c_ChangeBootStrap::$DEP_LIB, 'migration', $upgrateTo);
-			$this->log('Upgrade succefully installed in repository');
+			$url = null;
+			$upgrateToPath = $bootStrap->downloadDependency(c_ChangeBootStrap::$DEP_LIB, 'migration', $upgrateTo, $url);
+			$this->log('Upgrade succefully installed in repository from: ' . $url);
 			$migrationFolderPath = f_util_FileUtils::buildWebeditPath('migration');
 			$phpFilePath = $migrationFolderPath . '/migrate.php';
 			

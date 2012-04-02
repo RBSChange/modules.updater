@@ -31,9 +31,10 @@ class updater_DownloadUpgradeAction extends f_action_BaseJSONAction
 						
 			try
 			{
-				$upgrateToPath = $bootStrap->downloadDependency(c_ChangeBootStrap::$DEP_LIB, 'migration', $upgrateTo);
+				$url = null;
+				$upgrateToPath = $bootStrap->downloadDependency(c_ChangeBootStrap::$DEP_LIB, 'migration', $upgrateTo, $url);
 				
-				$this->log('Upgrade succefully installed in repository');
+				$this->log('Upgrade succefully installed in repository from: ' . $url);
 				$migrationFolderPath = f_util_FileUtils::buildWebeditPath('migration');
 				$phpFilePath = $migrationFolderPath . '/migrateweb.php';
 					
