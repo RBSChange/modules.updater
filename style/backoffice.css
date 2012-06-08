@@ -29,6 +29,7 @@ cupdaterview hbox[anonid="header"] {
 	margin: 5px;
 	border: 1px solid gainsboro;
 	-moz-border-radius: 5px;
+	border-radius: 5px;
 }
 
 cupdaterview hbox.warn {
@@ -45,5 +46,6 @@ cupdaterview vbox[anonid="intro"] {
 	margin: 5px;
 	border: 1px solid gainsboro;
 	-moz-border-radius: 5px;
+	border-radius: 5px;
 	background-color: #FCFFCD;
 }
