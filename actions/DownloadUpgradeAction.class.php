@@ -31,7 +31,9 @@ class updater_DownloadUpgradeAction extends f_action_BaseJSONAction
 						
 			try
 			{
+				ob_start();
 				$url = null;
+				
 				$upgrateToPath = $bootStrap->downloadDependency(c_ChangeBootStrap::$DEP_LIB, 'migration', $upgrateTo, $url);
 				
 				$this->log('Upgrade succefully installed in repository from: ' . $url);
@@ -58,6 +60,7 @@ class updater_DownloadUpgradeAction extends f_action_BaseJSONAction
 						if (is_array($result) && isset($result['checked']))
 						{
 							$result['logs'] = array_merge($this->logs, $result['logs']);
+							ob_get_clean();
 							return $this->sendJSON($result);
 						}
 						$this->log('Error on check: ' . $data, 'error');
@@ -68,9 +71,11 @@ class updater_DownloadUpgradeAction extends f_action_BaseJSONAction
 				{
 					$this->log('Unable to find migration script: ' . $phpFilePath, 'error');
 				}
+				ob_get_clean();
 			} 
 			catch (Exception $e) 
 			{
+				ob_get_clean();
 				$this->log('Unable to download upgrade', 'error');
 			}			
 		}
