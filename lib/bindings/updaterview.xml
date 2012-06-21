@@ -513,8 +513,10 @@
 					var rowNode = document.createElement('row');
 					var col = rowNode.appendChild(document.createElement('label'));
 					col.setAttribute('value', level);
+					col.setAttribute('class', 'allow-text-selection');
 					
 					col = rowNode.appendChild(document.createElement('label'));
+					col.setAttribute('class', 'allow-text-selection');
 					col.textContent = string;
 					return gridRows.appendChild(rowNode);
                 ]]></body>
