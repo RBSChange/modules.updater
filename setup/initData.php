@@ -11,8 +11,7 @@ class updater_Setup extends object_InitDataSetup
 		$tm = f_persistentdocument_TransactionManager::getInstance();
 		$pp = $tm->getPersistentProvider();
 		$pp->setDocumentCache(false);
-		
-		
+
 		$ids = users_BackenduserService::getInstance()->createQuery()
 			->add(Restrictions::like('dashboardcontent', 'modules_dashboard_browsersversion'))
 			->setProjection(Projections::property('id', 'id'))
@@ -45,6 +44,7 @@ class updater_Setup extends object_InitDataSetup
 				$tm->rollback($e);
 			}
 		}
+		$pp->setDocumentCache(true);
 	}
 
 	/**
